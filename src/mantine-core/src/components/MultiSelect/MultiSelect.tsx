@@ -8,7 +8,7 @@ import {
 } from '@mantine/hooks';
 import {
   DefaultProps,
-  ClassNames,
+  Selectors,
   extractSystemStyles,
   getDefaultZIndex,
   useMantineDefaultProps,
@@ -30,7 +30,7 @@ import { SelectSharedProps } from '../Select/Select';
 export type MultiSelectStylesNames =
   | DefaultValueStylesNames
   | Exclude<
-      ClassNames<typeof useStyles>,
+      Selectors<typeof useStyles>,
       'searchInputEmpty' | 'searchInputInputHidden' | 'searchInputPointer'
     >
   | Exclude<BaseSelectStylesNames, 'selected'>;
@@ -118,13 +118,13 @@ const defaultProps: Partial<MultiSelectProps> = {
   clearSearchOnBlur: false,
   disabled: false,
   initiallyOpened: false,
-  radius: 'sm',
   creatable: false,
   shouldCreate: defaultShouldCreate,
   switchDirectionOnFlip: false,
   zIndex: getDefaultZIndex('popover'),
   selectOnBlur: false,
   clearButtonTabIndex: 0,
+  positionDependencies: [],
 };
 
 export const MultiSelect = forwardRef<HTMLInputElement, MultiSelectProps>(
@@ -190,6 +190,8 @@ export const MultiSelect = forwardRef<HTMLInputElement, MultiSelectProps>(
       labelProps,
       descriptionProps,
       clearButtonTabIndex,
+      form,
+      positionDependencies,
       ...others
     } = useMantineDefaultProps('MultiSelect', defaultProps, props);
 
@@ -296,13 +298,14 @@ export const MultiSelect = forwardRef<HTMLInputElement, MultiSelectProps>(
     }, [searchValue]);
 
     useDidUpdate(() => {
-      //using greater than equal to take into account creatable type.
-      if (!disabled && _value.length >= data.length) setDropdownOpened(false);
+      if (!disabled && _value.length >= data.length) {
+        setDropdownOpened(false);
+      }
 
-      //for controlled input scenarios
-      if (!!maxSelectedValues && _value.length < maxSelectedValues) valuesOverflow.current = false;
-      /*preventing the dropdown opening on backspace while controlled
-      where values length is greater than maxSelectedValues. */
+      if (!!maxSelectedValues && _value.length < maxSelectedValues) {
+        valuesOverflow.current = false;
+      }
+
       if (!!maxSelectedValues && _value.length >= maxSelectedValues) {
         valuesOverflow.current = true;
         setDropdownOpened(false);
@@ -560,7 +563,7 @@ export const MultiSelect = forwardRef<HTMLInputElement, MultiSelectProps>(
           tabIndex={-1}
           ref={wrapperRef}
         >
-          <input type="hidden" name={name} value={_value.join(',')} />
+          <input type="hidden" name={name} value={_value.join(',')} form={form} />
 
           <Input<'div'>
             __staticSelector="MultiSelect"
@@ -645,6 +648,7 @@ export const MultiSelect = forwardRef<HTMLInputElement, MultiSelectProps>(
             withinPortal={withinPortal}
             zIndex={zIndex}
             dropdownPosition={dropdownPosition}
+            positionDependencies={positionDependencies}
           >
             <SelectItems
               data={filteredData}

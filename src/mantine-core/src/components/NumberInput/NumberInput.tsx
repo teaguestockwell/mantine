@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import { useMergedRef, assignRef, clamp, useOs } from '@mantine/hooks';
-import { DefaultProps, ClassNames, useMantineDefaultProps } from '@mantine/styles';
+import { DefaultProps, Selectors, useMantineDefaultProps } from '@mantine/styles';
 import { getInputMode } from '../../utils';
 import { TextInput } from '../TextInput/TextInput';
 import { InputStylesNames } from '../Input/Input';
 import { InputWrapperStylesNames } from '../InputWrapper/InputWrapper';
 import useStyles, { CONTROL_SIZES } from './NumberInput.styles';
 
-export type InnerNumberInputStylesNames = ClassNames<typeof useStyles>;
+export type InnerNumberInputStylesNames = Selectors<typeof useStyles>;
 export type NumberInputStylesNames =
   | InputStylesNames
   | InputWrapperStylesNames
@@ -119,6 +119,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       styles,
       size,
       rightSection,
+      rightSectionWidth,
       formatter,
       parser,
       ...others
@@ -362,7 +363,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         rightSection={
           rightSection || (disabled || hideControls || variant === 'unstyled' ? null : controls)
         }
-        rightSectionWidth={theme.fn.size({ size, sizes: CONTROL_SIZES }) + 1}
+        rightSectionWidth={rightSectionWidth || theme.fn.size({ size, sizes: CONTROL_SIZES }) + 1}
         radius={radius}
         max={max}
         min={min}

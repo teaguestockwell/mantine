@@ -1,11 +1,4 @@
-import {
-  createStyles,
-  MantineTheme,
-  MantineSize,
-  getSharedColorScheme,
-  MantineColor,
-  CSSObject,
-} from '@mantine/styles';
+import { createStyles, MantineTheme, MantineSize, MantineColor, CSSObject } from '@mantine/styles';
 
 export interface TextStylesParams {
   color: MantineColor;
@@ -74,8 +67,7 @@ export default createStyles(
       align,
     }: TextStylesParams
   ) => {
-    const colors = getSharedColorScheme({
-      theme,
+    const colors = theme.fn.variant({
       variant: 'gradient',
       gradient: { from: gradientFrom, to: gradientTo, deg: gradientDeg },
     });
@@ -95,12 +87,13 @@ export default createStyles(
         textTransform: transform,
         textAlign: align,
 
-        '&:hover':
+        ...theme.fn.hover(
           variant === 'link' && underline === undefined
             ? {
                 textDecoration: 'underline',
               }
-            : undefined,
+            : undefined
+        ),
       },
 
       gradient: {
