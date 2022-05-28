@@ -33,18 +33,25 @@ export function triggerSpotlightAction(actionId: string) {
   window.dispatchEvent(createEvent(SPOTLIGHT_EVENTS.triggerAction, actionId));
 }
 
-export function registerSpotlightActions(actions: SpotlightAction[]) {
-  window.dispatchEvent(createEvent(SPOTLIGHT_EVENTS.triggerAction, actions));
+export function registerSpotlightActions(actions: SpotlightAction[], immediate = false) {
+  const register = () =>
+    window.dispatchEvent(createEvent(SPOTLIGHT_EVENTS.registerActions, actions));
+
+  if (immediate) {
+    register();
+  } else {
+    setTimeout(register, 0);
+  }
 }
 
 export function removeSpotlightActions(actionsIds: string[]) {
-  window.dispatchEvent(createEvent(SPOTLIGHT_EVENTS.triggerAction, actionsIds));
+  window.dispatchEvent(createEvent(SPOTLIGHT_EVENTS.removeActions, actionsIds));
 }
 
 export function useSpotlightEvents(ctx: SpotlightContextValue) {
   const events = {
     registerActions: (event: any) => ctx.registerActions(event.detail),
-    removeActions: (event: any) => ctx.registerActions(event.detail),
+    removeActions: (event: any) => ctx.removeActions(event.detail),
     triggerAction: (event: any) => ctx.triggerAction(event.detail),
     open: ctx.openSpotlight,
     close: ctx.closeSpotlight,
