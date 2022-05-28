@@ -16,8 +16,11 @@ export default function Layout({ children, location }: LayoutProps) {
     getInitialValueInEffect: true,
   });
 
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+  const toggleColorScheme = (value?: ColorScheme) => {
+    const newColorScheme = value || (colorScheme === 'dark' ? 'light' : 'dark');
+    document.documentElement.style.setProperty('color-scheme', newColorScheme);
+    setColorScheme(newColorScheme);
+  };
 
   const toggleDirection = () => setDir((current) => (current === 'rtl' ? 'ltr' : 'rtl'));
 
